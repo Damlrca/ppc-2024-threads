@@ -6,6 +6,9 @@
 #include <utility>
 #include <vector>
 
+#include <iostream>
+#include <omp.h>
+
 bool check_CRS_properties(const matrix_CRS& A) {
   if (A.row_id.size() != size_t(A.n + 1)) return false;
   int nz = A.value.size();
@@ -80,8 +83,12 @@ bool CRSComplexMult_omp::run() {
   C->m = B->n;  // not m because B is transposed
   C->row_id.assign(C->n + 1, 0);
   std::vector<std::vector<std::pair<int, std::complex<double>>>> temp(C->n);
+  omp_set_num_threads(4);
 #pragma omp parallel for
   for (int i = 0; i < A->n; i++) {
+    if (i == 0) {
+      std::cout << omp_get_num_threads() << "\n";
+    }
     for (int j = 0; j < B->n; j++) {
       // C[i][j] = dot_product(A[i], B[j]);
       std::complex<double> T;
