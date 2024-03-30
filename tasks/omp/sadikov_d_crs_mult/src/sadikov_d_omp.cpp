@@ -1,8 +1,6 @@
 // Copyright 2024 Sadikov Damir
 #include "omp/sadikov_d_crs_mult/include/sadikov_d_omp.hpp"
 
-#include <omp.h>
-
 #include <algorithm>
 #include <complex>
 #include <utility>
@@ -82,7 +80,6 @@ bool CRSComplexMult_omp::run() {
   C->m = B->n;  // not m because B is transposed
   C->row_id.assign(C->n + 1, 0);
   std::vector<std::vector<std::pair<int, std::complex<double>>>> temp(C->n);
-  omp_set_num_threads(4);
 #pragma omp parallel for
   for (int i = 0; i < A->n; i++) {
     for (int j = 0; j < B->n; j++) {
